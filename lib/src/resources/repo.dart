@@ -20,6 +20,14 @@ class Repo {
 
     return treasureRecords;
   }
+
+  void recordFound(String id) {
+    recorder.set(id);
+  }
+
+  void clearFound() {
+    recorder.clear();
+  }
 }
 
 class TreasureRecord {
@@ -45,6 +53,4 @@ class TreasureRecord {
   String toString() {
     return 'TreasureRecord{treasure: $treasure, found: $found}';
   }
-
-
 }

@@ -11,12 +11,17 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         textTheme: TextTheme(
-          body1: TextStyle(fontSize: 18.0),
-          headline: TextStyle(
-            fontSize: 24.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.black54,
-          ),
+            body1: TextStyle(fontSize: 18.0),
+            headline: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.black54,
+            ),
+            title: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.w500,
+              color: Colors.amber,
+            )
         ),
         primarySwatch: Colors.amber,
       ),

@@ -4,6 +4,8 @@ import 'package:treasure_nfc/src/resources/repo.dart';
 import 'package:treasure_nfc/src/resources/treasure_provider.dart';
 import 'package:treasure_nfc/src/resources/treasures.dart';
 
+import 'test_structures.dart';
+
 void main() {
   test('get treasure data nothing found', () async {
     final repo = Repo(
@@ -79,26 +81,5 @@ class TestTreasureSource implements TreasuresSource {
   @override
   Future<List<Treasure>> fetchTreasures() {
     return Future.value(treasures);
-  }
-}
-
-class TestRecorder implements Recorder {
-  final keys = <String>[];
-
-  @override
-  void clear() {
-    keys.clear();
-  }
-
-  @override
-  Future<bool> get(String key) async {
-    return Future.value(keys.contains(key));
-  }
-
-  @override
-  void set(String key) {
-    if (!keys.contains(key)) {
-      keys.add(key);
-    }
   }
 }
