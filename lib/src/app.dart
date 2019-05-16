@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:treasure_nfc/src/treasure_screen.dart';
 
 import 'bloc_provider.dart';
@@ -10,8 +9,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        backgroundColor: Colors.black,
         textTheme: TextTheme(
             body1: TextStyle(fontSize: 18.0),
+            button: TextStyle(
+              fontSize: 18.0,
+              color: Colors.white,
+            ),
             headline: TextStyle(
               fontSize: 24.0,
               fontWeight: FontWeight.bold,
@@ -21,8 +25,7 @@ class App extends StatelessWidget {
               fontSize: 20.0,
               fontWeight: FontWeight.w500,
               color: Colors.amber,
-            )
-        ),
+            )),
         primarySwatch: Colors.amber,
       ),
       home: HomePage(),

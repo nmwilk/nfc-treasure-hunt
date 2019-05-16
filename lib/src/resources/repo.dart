@@ -1,4 +1,3 @@
-import 'package:rxdart/rxdart.dart';
 import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/resources/api.dart';
 import 'package:treasure_nfc/src/resources/recorder.dart';
@@ -9,15 +8,14 @@ class Repo {
   final Recorder recorder;
   final ApiCompletion completion = ApiCompletion();
 
-  final _name = BehaviorSubject<String>();
-
   Repo(this.treasuresSource, this.recorder);
 
   Future<List<TreasureRecord>> getRecords() async {
     final treasures = await treasuresSource.fetchTreasures();
 
     final treasureRecords = <TreasureRecord>[];
-    await treasures.forEach((treasure) async { // ignore: await_only_futures
+    await treasures.forEach((treasure) async {
+      // ignore: await_only_futures
       final found = await recorder.get(treasure.id);
       treasureRecords.add(TreasureRecord(treasure, found));
       return treasureRecords;
@@ -34,11 +32,15 @@ class Repo {
     recorder.clear();
   }
 
-  Future<bool> markCompleted() {
-    return completion.set(_name.value);
+  Future<bool> markNameSubmitted(String name) async {
+    final posted = await completion.set(name);
+    if (posted) {
+      recorder.set('postedname');
+    }
+    return posted;
   }
 
-  dispose() {
-    _name.close();
+  Future<bool> postedName() async {
+    return await recorder.get('postedname');
   }
 }
