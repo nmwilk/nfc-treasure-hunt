@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' show Client;
 import 'package:treasure_nfc/src/resources/treasure_provider.dart';
-import 'package:treasure_nfc/src/model/treasures.dart';
+import 'package:treasure_nfc/src/model/api_models.dart';
 
 class ApiTreasuresSource implements TreasuresSource {
   final client = Client();

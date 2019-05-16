@@ -1,5 +1,5 @@
 
-import 'package:treasure_nfc/src/model/treasures.dart';
+import 'package:treasure_nfc/src/model/api_models.dart';
 import 'package:treasure_nfc/src/resources/recorder.dart';
 import 'package:treasure_nfc/src/resources/treasure_provider.dart';
 

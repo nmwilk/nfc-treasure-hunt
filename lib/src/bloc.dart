@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/resources/api.dart';
 import 'package:treasure_nfc/src/resources/memory_structures.dart';
 import 'package:treasure_nfc/src/resources/repo.dart';

@@ -1,8 +1,8 @@
 import 'package:rxdart/rxdart.dart';
+import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/resources/api.dart';
 import 'package:treasure_nfc/src/resources/recorder.dart';
 import 'package:treasure_nfc/src/resources/treasure_provider.dart';
-import 'package:treasure_nfc/src/model/treasures.dart';
 
 class Repo {
   final TreasuresSource treasuresSource;
@@ -40,30 +40,5 @@ class Repo {
 
   dispose() {
     _name.close();
-  }
-}
-
-class TreasureRecord {
-  final Treasure treasure;
-  final bool found;
-
-  TreasureRecord(this.treasure, this.found);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is TreasureRecord &&
-              runtimeType == other.runtimeType &&
-              treasure == other.treasure &&
-              found == other.found;
-
-  @override
-  int get hashCode =>
-      treasure.hashCode ^
-      found.hashCode;
-
-  @override
-  String toString() {
-    return 'TreasureRecord{treasure: $treasure, found: $found}';
   }
 }

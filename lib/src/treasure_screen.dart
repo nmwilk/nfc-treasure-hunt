@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:treasure_nfc/src/bloc.dart';
 import 'package:treasure_nfc/src/bloc_provider.dart';
+import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/resources/repo.dart';
+import 'package:treasure_nfc/src/widget/grid.dart';
+import 'package:treasure_nfc/src/widget/title_bar.dart';
 
 class TreasureScreen extends StatelessWidget {
   @override
@@ -15,29 +18,7 @@ class TreasureScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Stack(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: StreamBuilder(
-                stream: bloc.scanStatus,
-                builder: (context, AsyncSnapshot<ScanStatus> snapshot) {
-                  return snapshot.hasData && snapshot.data.scanning
-                      ? RefreshProgressIndicator(
-                          backgroundColor: Colors.deepOrange)
-                      : Icon(Icons.error);
-                },
-              ),
-            ),
-            Center(
-              child: Text(
-                "Treasure Hunt",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline,
-              ),
-            ),
-          ],
-        ),
+        title: TitleBar(bloc: bloc),
       ),
       body: Stack(
         children: <Widget>[
@@ -82,7 +63,7 @@ class TreasureScreen extends StatelessWidget {
                     bloc.recordFound(treasureRecord.treasure.id);
                   }
                 },
-                child: buildCell(context, treasureRecord),
+                child: new GridCell(context: context, treasureRecord: treasureRecord),
               );
             },
           );
@@ -92,52 +73,6 @@ class TreasureScreen extends StatelessWidget {
           );
         }
       },
-    );
-  }
-
-  Stack buildCell(BuildContext context, TreasureRecord treasureRecord) {
-    return Stack(
-      children: <Widget>[
-        Image.network(treasureRecord.treasure.imageUrl),
-        Container(
-          color: treasureRecord.found ? Colors.transparent : Color(0x90000000),
-          child: Center(
-            child: SizedBox(
-              width: 100.0,
-              height: 100.0,
-              child: statusIcon(treasureRecord.found),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            child: Text(
-                treasureRecord.treasure.name,
-                    style: Theme.of(context).textTheme.title,
-            ),
-            margin: EdgeInsets.only(bottom: 10.0),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget statusIcon(bool found) {
-    return AnimatedCrossFade(
-      firstChild: SizedBox(
-        width: 100.0,
-        height: 100.0,
-        child: Image.asset('images/lock.png'),
-      ),
-      secondChild: SizedBox(
-        width: 100.0,
-        height: 100.0,
-        child: Image.asset('images/tick.png'),
-      ),
-      crossFadeState:
-          found ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-      duration: Duration(milliseconds: 150),
     );
   }
 

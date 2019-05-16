@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/resources/repo.dart';
-import 'package:treasure_nfc/src/resources/treasure_provider.dart';
-import 'package:treasure_nfc/src/model/treasures.dart';
+import 'package:treasure_nfc/src/model/api_models.dart';
 
 import 'test_structures.dart';
 
