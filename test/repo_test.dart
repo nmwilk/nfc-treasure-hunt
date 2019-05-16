@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:treasure_nfc/src/model/api_models.dart';
 import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/resources/repo.dart';
-import 'package:treasure_nfc/src/model/api_models.dart';
 
 import 'test_structures.dart';
 
@@ -15,9 +15,9 @@ void main() {
     final treasureRecords = await repo.getRecords();
 
     expect(treasureRecords, [
-      TreasureRecord(Treasure("red", "Red", "rid", null), false),
-      TreasureRecord(Treasure("green", "Green", "gid", null), false),
-      TreasureRecord(Treasure("blue", "Blue", "bid", null), false),
+      TreasureRecord(Treasure("red", "Red", "rid", ''), false),
+      TreasureRecord(Treasure("green", "Green", "gid", ''), false),
+      TreasureRecord(Treasure("blue", "Blue", "bid", ''), false),
     ]);
   });
 
@@ -33,9 +33,9 @@ void main() {
     final treasureRecords = await repo.getRecords();
 
     expect(treasureRecords, [
-      TreasureRecord(Treasure("red", "Red", "rid", null), true),
-      TreasureRecord(Treasure("green", "Green", "gid", null), false),
-      TreasureRecord(Treasure("blue", "Blue", "bid", null), false),
+      TreasureRecord(Treasure("red", "Red", "rid", ''), true),
+      TreasureRecord(Treasure("green", "Green", "gid", ''), false),
+      TreasureRecord(Treasure("blue", "Blue", "bid", ''), false),
     ]);
   });
 
@@ -53,9 +53,9 @@ void main() {
     final treasureRecords = await repo.getRecords();
 
     expect(treasureRecords, [
-      TreasureRecord(Treasure("red", "Red", "rid", null), true),
-      TreasureRecord(Treasure("green", "Green", "gid", null), true),
-      TreasureRecord(Treasure("blue", "Blue", "bid", null), true),
+      TreasureRecord(Treasure("red", "Red", "rid", ''), true),
+      TreasureRecord(Treasure("green", "Green", "gid", ''), true),
+      TreasureRecord(Treasure("blue", "Blue", "bid", ''), true),
     ]);
   });
 }
