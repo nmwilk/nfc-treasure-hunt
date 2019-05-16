@@ -39,17 +39,7 @@ class TreasureScreen extends StatelessWidget {
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) {
               var treasureRecord = snapshot.data[index];
-              return GestureDetector(
-                onTap: () {
-                  if (treasureRecord.found) {
-                    bloc.clearFound();
-                  } else {
-                    bloc.recordFound(treasureRecord.treasure.id);
-                  }
-                },
-                child:
-                    GridCell(context: context, treasureRecord: treasureRecord),
-              );
+              return GridCell(context: context, treasureRecord: treasureRecord);
             },
           );
         } else {
@@ -89,8 +79,9 @@ class TreasureScreen extends StatelessWidget {
     print('NFC: Scan started');
 
     FlutterNfcReader.read.listen((response) {
-      print('NFC: Scan read NFC tag');
+      print('NFC: Scan read NFC tag ${response.id} [${response.content}]');
       bloc.changeNfcData(response);
+      bloc.recordFound(response.id);
     }, onError: (error) {
       print('NFC: Scan error $error');
       bloc.changeNfcData(NfcData(id: '', content: '', error: 'No hardware'));

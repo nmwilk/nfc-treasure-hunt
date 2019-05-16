@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:treasure_nfc/src/mixins/validation_mixin.dart';
 import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/resources/api.dart';
+import 'package:treasure_nfc/src/resources/fake_api.dart';
 import 'package:treasure_nfc/src/resources/memory_structures.dart';
 import 'package:treasure_nfc/src/resources/repo.dart';
 
@@ -66,6 +67,10 @@ class Bloc extends ValidationMixin {
   Bloc(this._repo);
 
   Bloc.prod() : _repo = Repo(ApiTreasuresSource(), InMemoryRecorder()) {
+    _nfcData.stream.transform(nfcDataMapper()).pipe(_scanStatusOutput);
+  }
+
+  Bloc.local() : _repo = Repo(FakeTreasuresSource(), InMemoryRecorder()) {
     _nfcData.stream.transform(nfcDataMapper()).pipe(_scanStatusOutput);
   }
 
