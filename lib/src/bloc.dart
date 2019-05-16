@@ -88,8 +88,9 @@ class Bloc extends ValidationMixin {
     _name.close();
   }
 
-  Future<bool> markNameSubmitted() async {
-    return _repo.markNameSubmitted(_name.value);
+  Future<String> markNameSubmitted() async {
+    _repo.markNameSubmitted(_name.value);
+    return Future.value(_name.value);
   }
 
   Future<bool> isNameSubmitted() => _repo.postedName();

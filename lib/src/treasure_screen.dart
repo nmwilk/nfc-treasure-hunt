@@ -72,10 +72,16 @@ class TreasureScreen extends StatelessWidget {
   handleCompleted(BuildContext context, Bloc bloc) async {
     final alreadyPosted = await bloc.isNameSubmitted();
     if (!alreadyPosted) {
-      return _asyncNameDialog(context, bloc);
+      await _asyncNameDialog(context, bloc);
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => playAgain(context, bloc));
     }
 
     return Future.value("");
+  }
+
+  playAgain(BuildContext context, Bloc bloc) async {
+    return await _playAgainDialog(context, bloc);
   }
 
   Future<String> _asyncNameDialog(BuildContext context, Bloc bloc) async {
@@ -139,12 +145,55 @@ class TreasureScreen extends StatelessWidget {
                             snapshot.data.trim().length >= 3 &&
                             snapshot.error == null
                         ? () async {
-                            await bloc.markNameSubmitted();
-                            Navigator.of(context).pop();
+                            final name = await bloc.markNameSubmitted();
+                            Navigator.of(context).pop(name);
                           }
                         : null,
                   );
                 }),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<String> _playAgainDialog(BuildContext context, Bloc bloc) async {
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).backgroundColor,
+          title: Text(
+            'Play Again?',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 22.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+                child: Text(
+                  'No',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                disabledTextColor: Colors.deepOrange,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }
+            ),
+            FlatButton(
+                child: Text(
+                  'Yes',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                disabledTextColor: Colors.deepOrange,
+                onPressed: () {
+                  bloc.clearFound();
+                  Navigator.of(context).pop();
+                }
+            ),
           ],
         );
       },
