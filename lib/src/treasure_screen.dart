@@ -39,7 +39,12 @@ class TreasureScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: buildTreasuresList(bloc),
+      body: Stack(
+        children: <Widget>[
+          buildTreasuresList(bloc),
+          buildCompletion(bloc),
+        ],
+      ),
     );
   }
 
@@ -133,6 +138,20 @@ class TreasureScreen extends StatelessWidget {
       crossFadeState:
           found ? CrossFadeState.showSecond : CrossFadeState.showFirst,
       duration: Duration(milliseconds: 150),
+    );
+  }
+
+  Widget buildCompletion(Bloc bloc) {
+    return StreamBuilder(
+      stream: bloc.showCompleteNamePrompt,
+      builder: (context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.hasData && snapshot.data) {
+          return Center(
+            child: Text('Complete'),
+          );
+        }
+        return Container();
+      },
     );
   }
 }

@@ -14,7 +14,7 @@ class InMemoryRecorder implements Recorder {
   }
 
   @override
-  void set(String key) {
+  void set(String key) async {
     if (!keys.contains(key)) {
       keys.add(key);
     }

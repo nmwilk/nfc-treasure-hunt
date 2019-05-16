@@ -8,10 +8,14 @@
 import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:treasure_nfc/src/bloc.dart';
+import 'package:treasure_nfc/src/resources/memory_structures.dart';
+import 'package:treasure_nfc/src/resources/repo.dart';
+
+import 'test_structures.dart';
 
 void main() {
   test('emit scanning state', () async {
-    final bloc = Bloc();
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder()));
 
     bloc.scanStatus.listen((scanStatus) {
       expect(scanStatus, ScanStatus('id', 'message', true));
@@ -21,12 +25,25 @@ void main() {
   });
 
   test('emit not scanning state', () async {
-    final bloc = Bloc();
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder()));
 
     bloc.scanStatus.listen((scanStatus) {
       expect(scanStatus, ScanStatus('', 'Error', false));
     });
 
     bloc.changeNfcData(NfcData.fromMap({"nfcId":"id", "nfcContent": "message", "nfcStatus": "error"}));
+  });
+
+
+  test('notify all found', () async {
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder()));
+
+    bloc.showCompleteNamePrompt.listen((show) {
+      expect(show, true);
+    });
+
+    bloc.recordFound('red');
+    bloc.recordFound('green');
+    bloc.recordFound('blue');
   });
 }

@@ -9,7 +9,7 @@ class BlocProvider extends InheritedWidget {
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
 
   BlocProvider({Key key, Widget child})
-      : bloc = Bloc(),
+      : bloc = Bloc.prod(),
         super(key: key, child: child);
 
   static Bloc of(BuildContext context) {

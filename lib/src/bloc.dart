@@ -7,22 +7,16 @@ import 'package:treasure_nfc/src/resources/memory_structures.dart';
 import 'package:treasure_nfc/src/resources/repo.dart';
 
 class Bloc {
-  final Repo _repo = Repo(
-      ApiTreasuresSource(),
-      InMemoryRecorder()
-  );
-
-  final _nfcData = PublishSubject<NfcData>();
-  final _scanStatusOutput = BehaviorSubject<ScanStatus>();
+  final Repo _repo;
 
   final _treasures = PublishSubject<List<TreasureRecord>>();
+  final _nfcData = PublishSubject<NfcData>();
+  final _scanStatusOutput = BehaviorSubject<ScanStatus>();
+  final _namePrompt = PublishSubject<bool>();
 
-  Stream<List<TreasureRecord>> get treasures => _treasures.stream;
-
-  Function(NfcData) get changeNfcData => _nfcData.sink.add;
-
+  Stream<bool> get showCompleteNamePrompt => _namePrompt.stream.distinct();
   Stream<ScanStatus> get scanStatus => _scanStatusOutput.stream;
-
+  Stream<List<TreasureRecord>> get treasures => _treasures.stream;
   StreamTransformer<NfcData, ScanStatus> nfcDataMapper() {
     return StreamTransformer<NfcData, ScanStatus>.fromHandlers(
         handleData: (nfcData, sink) {
@@ -38,9 +32,14 @@ class Bloc {
     });
   }
 
+  Function(NfcData) get changeNfcData => _nfcData.sink.add;
+
   refreshTreasures() async {
     final records = await _repo.getRecords();
     _treasures.sink.add(records);
+    final firstTreasureNotFoundYet =
+        records.firstWhere((record) => !record.found, orElse: () => null);
+    _namePrompt.sink.add(firstTreasureNotFoundYet == null);
   }
 
   recordFound(String id) {
@@ -53,7 +52,9 @@ class Bloc {
     refreshTreasures();
   }
 
-  Bloc() {
+  Bloc(this._repo);
+
+  Bloc.prod() : _repo = Repo(ApiTreasuresSource(), InMemoryRecorder()) {
     _nfcData.stream.transform(nfcDataMapper()).pipe(_scanStatusOutput);
   }
 
@@ -61,6 +62,7 @@ class Bloc {
     _treasures.close();
     _nfcData.close();
     _scanStatusOutput.close();
+    _namePrompt.close();
   }
 }
 
@@ -71,7 +73,11 @@ class ScanStatus {
 
   ScanStatus(this.id, this.message, this.scanning);
 
-  bool operator == (o) => o is ScanStatus && o.id == id && o.message == message && o.scanning == scanning;
+  bool operator ==(o) =>
+      o is ScanStatus &&
+      o.id == id &&
+      o.message == message &&
+      o.scanning == scanning;
 
   @override
   String toString() {

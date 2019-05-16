@@ -1,10 +1,15 @@
+import 'package:rxdart/rxdart.dart';
+import 'package:treasure_nfc/src/resources/api.dart';
 import 'package:treasure_nfc/src/resources/recorder.dart';
 import 'package:treasure_nfc/src/resources/treasure_provider.dart';
-import 'package:treasure_nfc/src/resources/treasures.dart';
+import 'package:treasure_nfc/src/model/treasures.dart';
 
 class Repo {
   final TreasuresSource treasuresSource;
   final Recorder recorder;
+  final ApiCompletion completion = ApiCompletion();
+
+  final _name = BehaviorSubject<String>();
 
   Repo(this.treasuresSource, this.recorder);
 
@@ -27,6 +32,14 @@ class Repo {
 
   void clearFound() {
     recorder.clear();
+  }
+
+  Future<bool> markCompleted() {
+    return completion.set(_name.value);
+  }
+
+  dispose() {
+    _name.close();
   }
 }
 

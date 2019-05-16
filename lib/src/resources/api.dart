@@ -1,22 +1,36 @@
-import 'package:treasure_nfc/src/resources/treasure_provider.dart';
-import 'package:treasure_nfc/src/resources/treasures.dart';
+import 'dart:convert';
+
 import 'package:http/http.dart' show Client;
+import 'package:treasure_nfc/src/resources/treasure_provider.dart';
+import 'package:treasure_nfc/src/model/treasures.dart';
 
 class ApiTreasuresSource implements TreasuresSource {
   final client = Client();
 
   @override
   Future<List<Treasure>> fetchTreasures() async {
-    return Future.value([
-      Treasure("1", "Apple", "https://api.adorable.io/avatars/400/apple.png"),
-      Treasure("2", "Banana", "https://api.adorable.io/avatars/400/asfthuikpple.png"),
-      Treasure("3", "Carrot", "https://api.adorable.io/avatars/400/fshgsrfg.png"),
-      Treasure("4", "Dried Apricot", "https://api.adorable.io/avatars/400/fpggi.png"),
-      Treasure("5", "Earth", "https://api.adorable.io/avatars/400/fig9iownf.png"),
-      Treasure("6", "Fried Chicken", "https://api.adorable.io/avatars/400/fgighsfs.png"),
-      Treasure("7", "Garlic", "https://api.adorable.io/avatars/400/garlic.png"),
-      Treasure("8", "Hemp", "https://api.adorable.io/avatars/400/hemp.png"),
-    ]);
+    final response = await client.get(
+        'https://615xps11jj.execute-api.eu-west-2.amazonaws.com/aarrr/treasures');
+    final treasuresMap = json.decode(response.body)['treasures'];
+    final treasures = <Treasure>[];
+
+    treasuresMap.forEach((item) {
+      treasures.add(Treasure.fromJson(item));
+    });
+
+    return treasures;
   }
 }
 
+class ApiCompletion {
+  final client = Client();
+
+  Future<bool> set(String value) async {
+    final result = await client.put(
+        'https://615xps11jj.execute-api.eu-west-2.amazonaws.com/aarrr/names',
+        body: {"name": "$value"},
+        headers: {"Content-Type": "application/json"});
+
+    return result.statusCode / 100 == 2;
+  }
+}
