@@ -8,6 +8,7 @@
 import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:treasure_nfc/src/bloc.dart';
+import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/resources/memory_structures.dart';
 import 'package:treasure_nfc/src/resources/repo.dart';
 
@@ -18,7 +19,7 @@ void main() {
     final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder()));
 
     bloc.scanStatus.listen((scanStatus) {
-      expect(scanStatus, ScanStatus('id', 'message', true));
+      expect(scanStatus, ScanStatus('id', 'message', true, false));
     });
 
     bloc.changeNfcData(NfcData.fromMap({"nfcId":"id", "nfcContent": "message", "nfcStatus": "reading"}));
@@ -28,7 +29,7 @@ void main() {
     final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder()));
 
     bloc.scanStatus.listen((scanStatus) {
-      expect(scanStatus, ScanStatus('', 'Error', false));
+      expect(scanStatus, ScanStatus('', 'Error', false, false));
     });
 
     bloc.changeNfcData(NfcData.fromMap({"nfcId":"id", "nfcContent": "message", "nfcStatus": "error"}));

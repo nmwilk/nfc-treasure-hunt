@@ -24,3 +24,25 @@ class TreasureRecord {
     return 'TreasureRecord{treasure: $treasure, found: $found}';
   }
 }
+
+class ScanStatus {
+  final String id;
+  final String message;
+  final bool scanning;
+  final bool error;
+
+  ScanStatus(this.id, this.message, this.scanning, this.error);
+
+  bool operator ==(o) =>
+      o is ScanStatus &&
+          o.id == id &&
+          o.message == message &&
+          o.error == error &&
+          o.scanning == scanning;
+
+  @override
+  String toString() {
+    return 'ScanStatus{id: $id, message: $message, scanning: $scanning, error: $error}';
+  }
+}
+

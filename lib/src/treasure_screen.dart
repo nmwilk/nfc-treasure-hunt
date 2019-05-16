@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:treasure_nfc/src/bloc.dart';
 import 'package:treasure_nfc/src/bloc_provider.dart';
@@ -13,8 +14,6 @@ class TreasureScreen extends StatelessWidget {
 
     bloc.refreshTreasures();
 
-    startNFC(bloc);
-
     return Scaffold(
       appBar: AppBar(
         title: TitleBar(bloc: bloc),
@@ -27,21 +26,6 @@ class TreasureScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> startNFC(Bloc bloc) async {
-    final nfcData = NfcData();
-    nfcData.status = NFCStatus.reading;
-    bloc.changeNfcData(nfcData);
-
-    print('NFC: Scan started');
-
-    print('NFC: Scan readed NFC tag');
-    FlutterNfcReader.read.listen((response) {
-      bloc.changeNfcData(response);
-    }, onError: (error) {
-      bloc.changeNfcData(NfcData(id: '', content: '', error: 'No hardware'));
-    });
   }
 
   Widget buildTreasuresList(Bloc bloc) {
@@ -63,7 +47,8 @@ class TreasureScreen extends StatelessWidget {
                     bloc.recordFound(treasureRecord.treasure.id);
                   }
                 },
-                child: new GridCell(context: context, treasureRecord: treasureRecord),
+                child:
+                    GridCell(context: context, treasureRecord: treasureRecord),
               );
             },
           );
@@ -81,12 +66,51 @@ class TreasureScreen extends StatelessWidget {
       stream: bloc.showCompleteNamePrompt,
       builder: (context, AsyncSnapshot<bool> snapshot) {
         if (snapshot.hasData && snapshot.data) {
-          return Center(
-            child: Text('Complete'),
-          );
+          _stopNFC(bloc);
+          return Center(child: Text('Complete'));
+        }
+
+        if (snapshot.hasData && !snapshot.data) {
+          _startNFC(bloc);
         }
         return Container();
       },
     );
+  }
+
+  Future<void> _startNFC(Bloc bloc) async {
+    final nfcData = NfcData();
+    nfcData.status = NFCStatus.reading;
+    bloc.changeNfcData(nfcData);
+
+    print('NFC: Scan started');
+
+    FlutterNfcReader.read.listen((response) {
+      print('NFC: Scan read NFC tag');
+      bloc.changeNfcData(response);
+    }, onError: (error) {
+      print('NFC: Scan error $error');
+      bloc.changeNfcData(NfcData(id: '', content: '', error: 'No hardware'));
+    });
+  }
+
+  Future<void> _stopNFC(Bloc bloc) async {
+    NfcData response;
+
+    try {
+      print('NFC: Stop scan');
+      response = await FlutterNfcReader.stop;
+      bloc.changeNfcData(response);
+    } on PlatformException {
+      print('NFC: Stop scan exception');
+      response = NfcData(
+        id: '',
+        content: '',
+        error: 'NFC scan stop exception',
+        statusMapper: '',
+      );
+      response.status = NFCStatus.error;
+      bloc.changeNfcData(response);
+    }
   }
 }

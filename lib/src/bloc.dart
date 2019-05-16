@@ -24,9 +24,11 @@ class Bloc {
       var scanStatus;
       if (nfcData.status == NFCStatus.reading ||
           nfcData.status == NFCStatus.none) {
-        scanStatus = ScanStatus(nfcData.id, nfcData.content, true);
+        scanStatus = ScanStatus(nfcData.id, nfcData.content, true, false);
+      } else if (nfcData.error != null && nfcData.error != ''){
+        scanStatus = ScanStatus('', 'Error', false, true);
       } else {
-        scanStatus = ScanStatus('', 'Error', false);
+        scanStatus = ScanStatus('', '', false, false);
       }
 
       sink.add(scanStatus);
@@ -64,24 +66,5 @@ class Bloc {
     _nfcData.close();
     _scanStatusOutput.close();
     _namePrompt.close();
-  }
-}
-
-class ScanStatus {
-  final String id;
-  final String message;
-  final bool scanning;
-
-  ScanStatus(this.id, this.message, this.scanning);
-
-  bool operator ==(o) =>
-      o is ScanStatus &&
-      o.id == id &&
-      o.message == message &&
-      o.scanning == scanning;
-
-  @override
-  String toString() {
-    return 'id: $id, message: $message, scanning: $scanning';
   }
 }
