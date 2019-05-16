@@ -8,9 +8,9 @@ class Treasure {
 
   Treasure.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        name = json['name'],
-        tagId = json['tag_id'],
-        imageUrl = json['image_url'];
+        name = json['name'] ?? '',
+        tagId = json['tag_id'] ?? '',
+        imageUrl = json['image_url'] ?? '';
 
   @override
   String toString() {
