@@ -27,18 +27,26 @@ class GridCell extends StatelessWidget {
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            child: Text(
-              treasureRecord.treasure.name,
-              style: Theme.of(context).textTheme.title,
-            ),
-            margin: EdgeInsets.only(bottom: 10.0),
-          ),
-        )
+        buildTitle(context)
       ],
     );
+  }
+
+  Widget buildTitle(BuildContext context) {
+    if (treasureRecord.treasure.name.isEmpty || treasureRecord.found) {
+      return Container();
+    }
+    return Align(
+        alignment: Alignment.center,
+        child: Container(
+          color: Colors.black45,
+          child: Text(
+            treasureRecord.treasure.name,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.title,
+          ),
+          padding: EdgeInsets.all(10.0),
+        ));
   }
 }
 
