@@ -9,6 +9,7 @@ class ApiTreasuresSource implements TreasuresSource {
 
   @override
   Future<List<Treasure>> fetchTreasures() async {
+    print('fetching treasures');
     final response = await client.get(
         'https://615xps11jj.execute-api.eu-west-2.amazonaws.com/aarrr/treasures');
     final treasuresMap = json.decode(response.body)['treasures'];
@@ -18,6 +19,8 @@ class ApiTreasuresSource implements TreasuresSource {
       treasures.add(Treasure.fromJson(item));
     });
 
+    print('- ${response.statusCode}');
+
     return treasures;
   }
 }
@@ -26,11 +29,13 @@ class ApiCompletion {
   final client = Client();
 
   Future<bool> set(String value) async {
-    final result = await client.put(
+    print('posting name');
+    final response = await client.put(
         'https://615xps11jj.execute-api.eu-west-2.amazonaws.com/aarrr/names',
-        body: {"name": "$value"},
+        body: json.encode({"name": "$value"}),
         headers: {"Content-Type": "application/json"});
 
-    return result.statusCode / 100 == 2;
+    print('- ${response.statusCode}');
+    return response.statusCode / 100 == 2;
   }
 }
