@@ -39,15 +39,13 @@ class TitleBar extends StatelessWidget {
       return refreshIndicator();
     } else if (snapshot.data.error) {
       return Icon(Icons.error);
-    } else if (snapshot.data.scanning ){
+    } else if (snapshot.data.scanning) {
       return refreshIndicator();
     } else {
       return Container();
     }
   }
 
-  Widget refreshIndicator() {
-    return RefreshProgressIndicator(
-      backgroundColor: Colors.deepOrange);
-  }
+  Widget refreshIndicator() =>
+      RefreshProgressIndicator(backgroundColor: Colors.deepOrange);
 }
