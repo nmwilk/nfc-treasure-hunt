@@ -3,7 +3,6 @@ import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:treasure_nfc/src/bloc.dart';
 import 'package:treasure_nfc/src/bloc_provider.dart';
 import 'package:treasure_nfc/src/model/app_models.dart';
-import 'package:treasure_nfc/src/resources/repo.dart';
 import 'package:treasure_nfc/src/widget/grid.dart';
 import 'package:treasure_nfc/src/widget/title_bar.dart';
 
@@ -20,6 +19,7 @@ class TreasureScreen extends StatelessWidget {
       appBar: AppBar(
         title: TitleBar(bloc: bloc),
       ),
+      backgroundColor: Colors.amber.withOpacity(0.5),
       body: Stack(
         children: <Widget>[
           buildTreasuresList(bloc),

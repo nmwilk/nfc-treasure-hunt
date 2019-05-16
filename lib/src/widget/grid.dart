@@ -15,6 +15,7 @@ class GridCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
+        Container(color: Colors.amber),
         Image.network(treasureRecord.treasure.imageUrl),
         Container(
           color: treasureRecord.found ? Colors.transparent : Color(0x90000000),
@@ -63,7 +64,7 @@ class CellStatusIcon extends StatelessWidget {
         child: Image.asset('images/tick.png'),
       ),
       crossFadeState:
-      found ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          found ? CrossFadeState.showSecond : CrossFadeState.showFirst,
       duration: Duration(milliseconds: 150),
     );
   }
