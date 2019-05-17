@@ -1,5 +1,5 @@
-
 import 'package:treasure_nfc/src/model/api_models.dart';
+import 'package:treasure_nfc/src/resources/completion.dart';
 import 'package:treasure_nfc/src/resources/recorder.dart';
 import 'package:treasure_nfc/src/resources/treasure_provider.dart';
 
@@ -7,20 +7,22 @@ class TestRecorder implements Recorder {
   final keys = <String>[];
 
   @override
-  void clear() {
+  Future clear() {
     keys.clear();
+    return Future.value(null);
   }
 
   @override
   Future<bool> get(String key) async {
-    return Future.value(keys.contains(key));
+    return keys.contains(key);
   }
 
   @override
-  void set(String key) {
+  Future set(String key) {
     if (!keys.contains(key)) {
       keys.add(key);
     }
+    return Future.value(null);
   }
 }
 
@@ -34,5 +36,12 @@ class TestTreasureSource implements TreasuresSource {
   @override
   Future<List<Treasure>> fetchTreasures() {
     return Future.value(treasures);
+  }
+}
+
+class TestCompletion implements Completion {
+  @override
+  Future<bool> set(String value) {
+    return Future.value(true);
   }
 }

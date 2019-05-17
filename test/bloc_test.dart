@@ -16,7 +16,7 @@ import 'test_structures.dart';
 
 void main() {
   test('emit scanning state', () async {
-    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder()));
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()));
 
     bloc.scanStatus.listen((scanStatus) {
       expect(scanStatus, ScanStatus('id', 'message', true, false));
@@ -26,7 +26,7 @@ void main() {
   });
 
   test('emit not scanning state', () async {
-    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder()));
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()));
 
     bloc.scanStatus.listen((scanStatus) {
       expect(scanStatus, ScanStatus('', 'Error', false, false));
@@ -35,16 +35,28 @@ void main() {
     bloc.changeNfcData(NfcData.fromMap({"nfcId":"id", "nfcContent": "message", "nfcStatus": "error"}));
   });
 
+  test('prompt for name', () async {
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()));
 
-  test('notify all found', () async {
-    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder()));
+    await bloc.recordFound('red');
+    await bloc.recordFound('green');
+    await bloc.recordFound('blue');
 
     bloc.showCompleteNamePrompt.listen((show) {
       expect(show, true);
     });
+  });
 
-    bloc.recordFound('red');
-    bloc.recordFound('green');
-    bloc.recordFound('blue');
+  test('not prompt for name', () async {
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()));
+
+    await bloc.markNameSubmitted();
+    await bloc.recordFound('red');
+    await bloc.recordFound('green');
+    await bloc.recordFound('blue');
+
+    bloc.showCompleteNamePrompt.listen((show) {
+      expect(show, false);
+    });
   });
 }

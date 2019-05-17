@@ -10,8 +10,6 @@ class TreasureScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of(context);
 
-    bloc.refreshTreasures();
-
     return Scaffold(
       appBar: AppBar(
         title: TitleBar(bloc: bloc),
@@ -37,7 +35,12 @@ class TreasureScreen extends StatelessWidget {
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) {
               var treasureRecord = snapshot.data[index];
-              return GridCell(context: context, treasureRecord: treasureRecord);
+              return GestureDetector(
+                  onTap: () {
+                    bloc.recordFound(treasureRecord.treasure.id);
+                  },
+                  child: GridCell(
+                      context: context, treasureRecord: treasureRecord));
             },
           );
         } else {
@@ -53,16 +56,10 @@ class TreasureScreen extends StatelessWidget {
     return StreamBuilder(
       stream: bloc.showCompleteNamePrompt,
       builder: (context, AsyncSnapshot<bool> snapshot) {
-        var completed = snapshot.data;
-        if (snapshot.hasData && completed) {
-          bloc.stopNfc();
-
+        if (snapshot.hasData && snapshot.data) {
+          print('user completed');
           WidgetsBinding.instance
               .addPostFrameCallback((_) => handleCompleted(context, bloc));
-        }
-
-        if (snapshot.hasData && !completed) {
-          bloc.startScanning();
         }
         return Container();
       },
@@ -181,19 +178,17 @@ class TreasureScreen extends StatelessWidget {
                 disabledTextColor: Colors.deepOrange,
                 onPressed: () {
                   Navigator.of(context).pop();
-                }
-            ),
+                }),
             FlatButton(
                 child: Text(
                   'Yes',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 disabledTextColor: Colors.deepOrange,
-                onPressed: () {
-                  bloc.clearFound();
+                onPressed: () async {
+                  await bloc.clearFound();
                   Navigator.of(context).pop();
-                }
-            ),
+                }),
           ],
         );
       },

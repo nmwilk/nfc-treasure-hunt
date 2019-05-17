@@ -3,7 +3,6 @@ import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:treasure_nfc/src/bloc.dart';
 
 class NfcReader {
-
   Future<void> startNfc(Bloc bloc) async {
     final nfcData = NfcData();
     nfcData.status = NFCStatus.reading;
@@ -11,10 +10,10 @@ class NfcReader {
 
     print('NFC: Scan started');
 
-    FlutterNfcReader.read.listen((response) {
+    FlutterNfcReader.read.listen((response) async {
       print('NFC: Scan read NFC tag ${response.id} [${response.content}]');
       bloc.changeNfcData(response);
-      bloc.recordFound(response.id);
+      await bloc.recordFound(response.id);
     }, onError: (error) {
       print('NFC: Scan error $error');
       bloc.changeNfcData(NfcData(id: '', content: '', error: 'No hardware'));

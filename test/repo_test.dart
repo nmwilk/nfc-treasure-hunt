@@ -10,6 +10,7 @@ void main() {
     final repo = Repo(
       TestTreasureSource(),
       TestRecorder(),
+      TestCompletion(),
     );
 
     final treasureRecords = await repo.getRecords();
@@ -28,6 +29,7 @@ void main() {
     final repo = Repo(
       TestTreasureSource(),
       testRecorder,
+      TestCompletion(),
     );
 
     final treasureRecords = await repo.getRecords();
@@ -48,6 +50,7 @@ void main() {
     final repo = Repo(
       TestTreasureSource(),
       testRecorder,
+      TestCompletion(),
     );
 
     final treasureRecords = await repo.getRecords();

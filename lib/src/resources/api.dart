@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' show Client;
-import 'package:treasure_nfc/src/resources/treasure_provider.dart';
 import 'package:treasure_nfc/src/model/api_models.dart';
+import 'package:treasure_nfc/src/resources/completion.dart';
+import 'package:treasure_nfc/src/resources/treasure_provider.dart';
 
 class ApiTreasuresSource implements TreasuresSource {
   final client = Client();
@@ -25,9 +26,10 @@ class ApiTreasuresSource implements TreasuresSource {
   }
 }
 
-class ApiCompletion {
+class ApiCompletion implements Completion {
   final client = Client();
 
+  @override
   Future<bool> set(String value) async {
     print('posting name');
     final response = await client.put(
@@ -39,3 +41,4 @@ class ApiCompletion {
     return response.statusCode / 100 == 2;
   }
 }
+

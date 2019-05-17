@@ -28,7 +28,7 @@ dependencies:
   path_provider: ^0.4.1
   http: ^0.12.0+2
   rxdart: ^0.21.0
-
+  shared_preferences: ^0.5.2
   flutter_nfc_reader:
     git:
       url: git://github.com/nmwilk/flutter-nfc-reader.git

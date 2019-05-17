@@ -4,19 +4,21 @@ class InMemoryRecorder implements Recorder {
   final keys = <String>[];
 
   @override
-  void clear() {
+  Future clear() {
     keys.clear();
+    return Future.value(null);
   }
 
   @override
   Future<bool> get(String key) async {
-    return Future.value(keys.contains(key));
+    return keys.contains(key);
   }
 
   @override
-  void set(String key) async {
+  Future set(String key) async {
     if (!keys.contains(key)) {
       keys.add(key);
     }
+    return null;
   }
 }
