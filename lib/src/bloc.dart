@@ -26,7 +26,7 @@ class Bloc extends ValidationMixin {
 
   var showCompleteNamePrompt;
 
-  Stream<ScanStatus> get scanStatus => _scanStatusOutput.stream;
+  var scanStatus;
 
   Stream<List<TreasureRecord>> get treasures => _treasures.stream;
 
@@ -87,6 +87,7 @@ class Bloc extends ValidationMixin {
   Bloc(this._repo) {
     print('created bloc');
     showCompleteNamePrompt = _namePrompt.stream.distinct();
+    scanStatus = _scanStatusOutput.stream.distinct();
     _nfcData.stream.transform(nfcDataMapper()).pipe(_scanStatusOutput);
     refreshTreasures();
   }
@@ -120,7 +121,7 @@ class Bloc extends ValidationMixin {
   }
 
   Future<void> stopScanning() {
-    print('startScanning');
+    print('stopScanning');
     return nfcReader.stopNfc(this);
   }
 }

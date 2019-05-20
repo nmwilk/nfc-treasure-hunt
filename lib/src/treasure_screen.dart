@@ -5,7 +5,14 @@ import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/widget/grid.dart';
 import 'package:treasure_nfc/src/widget/title_bar.dart';
 
-class TreasureScreen extends StatelessWidget {
+class TreasureScreen extends StatefulWidget {
+  @override
+  _TreasureScreenState createState() => _TreasureScreenState();
+}
+
+class _TreasureScreenState extends State<TreasureScreen> {
+  var showingDialog = false;
+
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of(context);
@@ -56,7 +63,8 @@ class TreasureScreen extends StatelessWidget {
     return StreamBuilder(
       stream: bloc.showCompleteNamePrompt,
       builder: (context, AsyncSnapshot<bool> snapshot) {
-        if (snapshot.hasData && snapshot.data) {
+        if (!showingDialog && snapshot.hasData && snapshot.data) {
+          showingDialog = true;
           print('user completed');
           WidgetsBinding.instance
               .addPostFrameCallback((_) => handleCompleted(context, bloc));
@@ -70,15 +78,17 @@ class TreasureScreen extends StatelessWidget {
     final alreadyPosted = await bloc.isNameSubmitted();
     if (!alreadyPosted) {
       await _asyncNameDialog(context, bloc);
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => playAgain(context, bloc));
     }
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => playAgain(context, bloc));
 
     return Future.value("");
   }
 
   playAgain(BuildContext context, Bloc bloc) async {
-    return await _playAgainDialog(context, bloc);
+    var result = await _playAgainDialog(context, bloc);
+    showingDialog = false;
+    return result;
   }
 
   Future<String> _asyncNameDialog(BuildContext context, Bloc bloc) async {
