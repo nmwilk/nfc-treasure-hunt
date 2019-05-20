@@ -2,23 +2,35 @@ import 'package:treasure_nfc/src/resources/recorder.dart';
 
 class InMemoryRecorder implements Recorder {
   final keys = <String>[];
+  var postedName = false;
 
   @override
-  Future clear() {
+  Future clearFound() {
     keys.clear();
     return Future.value(null);
   }
 
   @override
-  Future<bool> get(String key) async {
+  Future<bool> getFound(String key) async {
     return keys.contains(key);
   }
 
   @override
-  Future set(String key) async {
+  Future setFound(String key) async {
     if (!keys.contains(key)) {
       keys.add(key);
     }
-    return null;
+    return Future.value(null);
+  }
+
+  @override
+  Future<bool> hasPostedName() {
+    return Future.value(postedName);
+  }
+
+  @override
+  Future setPostedName() {
+    postedName = true;
+    return Future.value(null);
   }
 }

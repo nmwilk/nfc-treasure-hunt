@@ -42,12 +42,8 @@ class _TreasureScreenState extends State<TreasureScreen> {
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) {
               var treasureRecord = snapshot.data[index];
-              return GestureDetector(
-                  onTap: () {
-                    bloc.recordFound(treasureRecord.treasure.id);
-                  },
-                  child: GridCell(
-                      context: context, treasureRecord: treasureRecord));
+              return GridCell(
+                  context: context, treasureRecord: treasureRecord);
             },
           );
         } else {
@@ -61,22 +57,21 @@ class _TreasureScreenState extends State<TreasureScreen> {
 
   Widget buildCompletion(Bloc bloc) {
     return StreamBuilder(
-      stream: bloc.showCompleteNamePrompt,
+      stream: bloc.showCompletePrompt,
       builder: (context, AsyncSnapshot<bool> snapshot) {
-        if (!showingDialog && snapshot.hasData && snapshot.data) {
-          showingDialog = true;
+        if (!showingDialog && snapshot.hasData) {
           print('user completed');
           WidgetsBinding.instance
-              .addPostFrameCallback((_) => handleCompleted(context, bloc));
+              .addPostFrameCallback((_) => handleCompleted(context, bloc, snapshot.data));
         }
         return Container();
       },
     );
   }
 
-  handleCompleted(BuildContext context, Bloc bloc) async {
-    final alreadyPosted = await bloc.isNameSubmitted();
-    if (!alreadyPosted) {
+  handleCompleted(BuildContext context, Bloc bloc, bool showNamePrompt) async {
+    showingDialog = true;
+    if (showNamePrompt) {
       await _asyncNameDialog(context, bloc);
     }
     WidgetsBinding.instance
@@ -196,7 +191,7 @@ class _TreasureScreenState extends State<TreasureScreen> {
                 ),
                 disabledTextColor: Colors.deepOrange,
                 onPressed: () async {
-                  await bloc.clearFound();
+                  await bloc.restart();
                   Navigator.of(context).pop();
                 }),
           ],

@@ -16,7 +16,7 @@ class Repo {
 
     final treasureRecords = <TreasureRecord>[];
     await treasures.forEach((treasure) async {
-      final found = await recorder.get(treasure.id);
+      final found = await recorder.getFound(treasure.id);
       treasureRecords.add(TreasureRecord(treasure, found));
     });
 
@@ -24,23 +24,23 @@ class Repo {
   }
 
   Future recordFound(String id) async {
-    await recorder.set(id);
+    await recorder.setFound(id);
   }
 
   Future clearFound() async {
-    await recorder.clear();
+    await recorder.clearFound();
   }
 
   Future<bool> markNameSubmitted(String name) async {
     final posted = await completion.set(name);
     if (posted) {
       print('Marked name posted');
-      await recorder.set('postedname');
+      await recorder.setPostedName();
     }
     return posted;
   }
 
   Future<bool> postedName() async {
-    return await recorder.get('postedname');
+    return await recorder.hasPostedName();
   }
 }

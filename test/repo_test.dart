@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:treasure_nfc/src/model/api_models.dart';
 import 'package:treasure_nfc/src/model/app_models.dart';
+import 'package:treasure_nfc/src/resources/memory_structures.dart';
 import 'package:treasure_nfc/src/resources/repo.dart';
 
 import 'test_structures.dart';
@@ -9,7 +10,7 @@ void main() {
   test('get treasure data nothing found', () async {
     final repo = Repo(
       TestTreasureSource(),
-      TestRecorder(),
+      InMemoryRecorder(),
       TestCompletion(),
     );
 
@@ -23,8 +24,8 @@ void main() {
   });
 
   test('get treasure data 1 found', () async {
-    final testRecorder = TestRecorder();
-    testRecorder.set("red");
+    final testRecorder = InMemoryRecorder();
+    testRecorder.setFound("red");
 
     final repo = Repo(
       TestTreasureSource(),
@@ -42,10 +43,10 @@ void main() {
   });
 
   test('get treasure data all found', () async {
-    final testRecorder = TestRecorder();
-    testRecorder.set("red");
-    testRecorder.set("blue");
-    testRecorder.set("green");
+    final testRecorder = InMemoryRecorder();
+    testRecorder.setFound("red");
+    testRecorder.setFound("blue");
+    testRecorder.setFound("green");
 
     final repo = Repo(
       TestTreasureSource(),

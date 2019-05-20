@@ -42,7 +42,7 @@ void main() {
     await bloc.recordFound('green');
     await bloc.recordFound('blue');
 
-    bloc.showCompleteNamePrompt.listen((show) {
+    bloc.showCompletePrompt.listen((show) {
       expect(show, true);
     });
   });
@@ -55,7 +55,7 @@ void main() {
     await bloc.recordFound('green');
     await bloc.recordFound('blue');
 
-    bloc.showCompleteNamePrompt.listen((show) {
+    bloc.showCompletePrompt.listen((show) {
       expect(show, false);
     });
   });

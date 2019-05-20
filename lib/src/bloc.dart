@@ -7,7 +7,6 @@ import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/nfc/nfc_reader.dart';
 import 'package:treasure_nfc/src/resources/api.dart';
 import 'package:treasure_nfc/src/resources/fake_api.dart';
-import 'package:treasure_nfc/src/resources/memory_structures.dart';
 import 'package:treasure_nfc/src/resources/prefs_recorder.dart';
 import 'package:treasure_nfc/src/resources/repo.dart';
 
@@ -16,19 +15,19 @@ class Bloc extends ValidationMixin {
 
   final nfcReader = NfcReader();
 
+  Stream<List<TreasureRecord>> get treasures => _treasures.stream;
   final _treasures = BehaviorSubject<List<TreasureRecord>>();
+
   final _nfcData = PublishSubject<NfcData>();
+  var scanStatus;
   final _scanStatusOutput = BehaviorSubject<ScanStatus>();
-  final _namePrompt = PublishSubject<bool>();
+
+  final _endPrompt = PublishSubject<bool>();
   final _name = BehaviorSubject<String>();
 
   Stream<String> get name => _name.stream.transform(validateName);
 
-  var showCompleteNamePrompt;
-
-  var scanStatus;
-
-  Stream<List<TreasureRecord>> get treasures => _treasures.stream;
+  var showCompletePrompt;
 
   StreamTransformer<NfcData, ScanStatus> nfcDataMapper() {
     return StreamTransformer<NfcData, ScanStatus>.fromHandlers(
@@ -65,10 +64,8 @@ class Bloc extends ValidationMixin {
     print('gotAllTreasures: $gotAllTreasures');
 
     final postedName = await _repo.postedName();
-    _namePrompt.sink.add(records.isNotEmpty && gotAllTreasures && !postedName);
-
-    if (gotAllTreasures) {
-      await stopScanning();
+    if (records.isNotEmpty && gotAllTreasures) {
+      _endPrompt.sink.add(!postedName);
     }
   }
 
@@ -78,29 +75,31 @@ class Bloc extends ValidationMixin {
     refreshTreasures();
   }
 
-  clearFound() async {
-    print('clearFound');
+  restart() async {
+    print('restart');
     await _repo.clearFound();
     refreshTreasures();
   }
 
   Bloc(this._repo) {
     print('created bloc');
-    showCompleteNamePrompt = _namePrompt.stream.distinct();
+    showCompletePrompt = _endPrompt.stream;
     scanStatus = _scanStatusOutput.stream.distinct();
     _nfcData.stream.transform(nfcDataMapper()).pipe(_scanStatusOutput);
     refreshTreasures();
+    startScanning();
   }
 
   Bloc.prod() : this(Repo(ApiTreasuresSource(), PrefsRecorder(), ApiCompletion()));
 
-  Bloc.local() : this(Repo(FakeTreasuresSource(), InMemoryRecorder(), ApiCompletion()));
+  Bloc.local() : this(Repo(FakeTreasuresSource(), PrefsRecorder(), ApiCompletion()));
 
   dispose() {
+    _stopScanning();
     _treasures.close();
     _nfcData.close();
     _scanStatusOutput.close();
-    _namePrompt.close();
+    _endPrompt.close();
     _name.close();
   }
 
@@ -120,7 +119,7 @@ class Bloc extends ValidationMixin {
     return nfcReader.startNfc(this);
   }
 
-  Future<void> stopScanning() {
+  Future<void> _stopScanning() {
     print('stopScanning');
     return nfcReader.stopNfc(this);
   }

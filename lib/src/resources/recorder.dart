@@ -1,5 +1,7 @@
 class Recorder {
-  Future clear(){}
-  Future set(String key){}
-  Future<bool> get(String key){}
+  Future clearFound(){}
+  Future setFound(String key){}
+  Future<bool> getFound(String key){}
+  Future setPostedName(){}
+  Future<bool> hasPostedName(){}
 }
