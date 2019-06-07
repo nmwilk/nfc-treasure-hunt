@@ -18,7 +18,7 @@ class NfcReader {
       FlutterNfcReader.read.listen((response) async {
         print('NFC: Scan read NFC tag ${response.id} [${response.content}]');
         bloc.changeNfcData(response);
-        await bloc.recordFound(response.id);
+        await bloc.recordFound(response.id.substring(2).toUpperCase());
       }, onError: (error) {
         print('NFC: Scan error $error');
         bloc.changeNfcData(NfcData(id: '', content: '', error: 'No hardware'));

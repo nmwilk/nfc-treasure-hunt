@@ -52,6 +52,8 @@ class Bloc extends ValidationMixin {
   refreshTreasures() async {
     print('refreshTreasures');
     final records = await _repo.getRecords();
+
+    print('- got ${records.length} treasures');
     _treasures.sink.add(records);
 
     var gotAllTreasures = records.isNotEmpty;
