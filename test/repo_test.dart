@@ -25,7 +25,7 @@ void main() {
 
   test('get treasure data 1 found', () async {
     final testRecorder = InMemoryRecorder();
-    testRecorder.setFound("red");
+    testRecorder.setFound("rid");
 
     final repo = Repo(
       TestTreasureSource(),
@@ -44,9 +44,9 @@ void main() {
 
   test('get treasure data all found', () async {
     final testRecorder = InMemoryRecorder();
-    testRecorder.setFound("red");
-    testRecorder.setFound("blue");
-    testRecorder.setFound("green");
+    testRecorder.setFound("rid");
+    testRecorder.setFound("bid");
+    testRecorder.setFound("gid");
 
     final repo = Repo(
       TestTreasureSource(),

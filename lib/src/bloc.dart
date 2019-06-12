@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:treasure_nfc/src/mixins/validation_mixin.dart';
 import 'package:treasure_nfc/src/model/app_models.dart';
 import 'package:treasure_nfc/src/nfc/nfc_reader.dart';
+import 'package:treasure_nfc/src/nfc/nfc_source.dart';
 import 'package:treasure_nfc/src/resources/api.dart';
 import 'package:treasure_nfc/src/resources/fake_api.dart';
 import 'package:treasure_nfc/src/resources/prefs_recorder.dart';
@@ -13,7 +14,7 @@ import 'package:treasure_nfc/src/resources/repo.dart';
 class Bloc extends ValidationMixin {
   final Repo _repo;
 
-  final nfcReader = NfcReader();
+  final NfcSource _nfcReader;
 
   Stream<List<TreasureRecord>> get treasures => _treasures.stream;
   final _treasures = BehaviorSubject<List<TreasureRecord>>();
@@ -36,7 +37,8 @@ class Bloc extends ValidationMixin {
       if (nfcData.status == NFCStatus.reading ||
           nfcData.status == NFCStatus.none) {
         scanStatus = ScanStatus(nfcData.id, nfcData.content, true, false);
-      } else if (nfcData.error != null && nfcData.error != '') {
+      } else if (nfcData.status == NFCStatus.error ||
+          (nfcData.error != null && nfcData.error != '')) {
         scanStatus = ScanStatus('', 'Error', false, true);
       } else {
         scanStatus = ScanStatus('', '', false, false);
@@ -83,7 +85,7 @@ class Bloc extends ValidationMixin {
     refreshTreasures();
   }
 
-  Bloc(this._repo) {
+  Bloc(this._repo, this._nfcReader) {
     print('created bloc');
     showCompletePrompt = _endPrompt.stream;
     scanStatus = _scanStatusOutput.stream.distinct();
@@ -92,9 +94,9 @@ class Bloc extends ValidationMixin {
     startScanning();
   }
 
-  Bloc.prod() : this(Repo(ApiTreasuresSource(), PrefsRecorder(), ApiCompletion()));
+  Bloc.prod() : this(Repo(ApiTreasuresSource(), PrefsRecorder(), ApiCompletion()), NfcReader());
 
-  Bloc.local() : this(Repo(FakeTreasuresSource(), PrefsRecorder(), ApiCompletion()));
+  Bloc.local() : this(Repo(FakeTreasuresSource(), PrefsRecorder(), ApiCompletion()), NfcReader());
 
   dispose() {
     _stopScanning();
@@ -118,11 +120,11 @@ class Bloc extends ValidationMixin {
 
   Future<void> startScanning() {
     print('startScanning');
-    return nfcReader.startNfc(this);
+    return _nfcReader.startNfc(this);
   }
 
   Future<void> _stopScanning() {
     print('stopScanning');
-    return nfcReader.stopNfc(this);
+    return _nfcReader.stopNfc(this);
   }
 }

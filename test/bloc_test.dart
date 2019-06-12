@@ -9,6 +9,7 @@ import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:treasure_nfc/src/bloc.dart';
 import 'package:treasure_nfc/src/model/app_models.dart';
+import 'package:treasure_nfc/src/nfc/fake_nfc.dart';
 import 'package:treasure_nfc/src/resources/memory_structures.dart';
 import 'package:treasure_nfc/src/resources/repo.dart';
 
@@ -16,7 +17,7 @@ import 'test_structures.dart';
 
 void main() {
   test('emit scanning state', () async {
-    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()));
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()), FakeNfc());
 
     bloc.scanStatus.listen((scanStatus) {
       expect(scanStatus, ScanStatus('id', 'message', true, false));
@@ -26,17 +27,17 @@ void main() {
   });
 
   test('emit not scanning state', () async {
-    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()));
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()), FakeNfc());
 
     bloc.scanStatus.listen((scanStatus) {
-      expect(scanStatus, ScanStatus('', 'Error', false, false));
+      expect(scanStatus, ScanStatus('', 'Error', false, true));
     });
 
     bloc.changeNfcData(NfcData.fromMap({"nfcId":"id", "nfcContent": "message", "nfcStatus": "error"}));
   });
 
   test('prompt for name', () async {
-    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()));
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()), FakeNfc());
 
     await bloc.recordFound('red');
     await bloc.recordFound('green');
@@ -48,7 +49,7 @@ void main() {
   });
 
   test('not prompt for name', () async {
-    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()));
+    final bloc = Bloc(Repo(TestTreasureSource(), InMemoryRecorder(), TestCompletion()), FakeNfc());
 
     await bloc.markNameSubmitted();
     await bloc.recordFound('red');

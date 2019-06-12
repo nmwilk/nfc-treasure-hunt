@@ -1,8 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 import 'package:treasure_nfc/src/bloc.dart';
+import 'package:treasure_nfc/src/nfc/nfc_source.dart';
 
-class NfcReader {
+class NfcReader implements NfcSource {
   var scanning = false;
 
   Future<void> startNfc(Bloc bloc) async {
